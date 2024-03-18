@@ -1,0 +1,136 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+android {
+    compileSdk 34
+    useLibrary 'org.apache.http.legacy'
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    defaultConfig {
+        applicationId "com.stockwithme.mts"
+        minSdkVersion 29
+        targetSdkVersion 33
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+    }
+
+    signingConfigs {
+        development {
+            storeFile file('keystore/stockwithme.jks')
+            storePassword 'asdf7410'
+            keyAlias = 'stockwm'
+            keyPassword 'asdf7410'
+        }
+
+        productionTest {
+            storeFile file('keystore/stockwithme.jks')
+            storePassword 'asdf7410'
+            keyAlias = 'stockwm'
+            keyPassword 'asdf7410'
+        }
+
+        production {
+            storeFile file('keystore/stockwithme.jks')
+            storePassword 'asdf7410'
+            keyAlias = 'stockwm'
+            keyPassword 'asdf7410'
+        }
+    }
+
+    flavorDimensions "build-type"
+    productFlavors {
+        development {
+            dimension "build-type"
+            // 모바일 OTP에서 사용하는 ANDROID_ID의 값이 동일 해야 하기 때문에 서명키 운영키로 고정
+            signingConfig signingConfigs.production
+
+            applicationId "com.stockwithme.mtsdev"
+            manifestPlaceholders = [appLabel: "내주식D",
+                                    appIcon: "@mipmap/ic_launcher",
+                                    appIconRound: "@mipmap/ic_launcher_round",
+                                    deeplinkScheme: "stockwmdev",
+                                    mediaType: "DEBUG"]
+            // println System.getProperty('java.home') + File.separator + 'bin' + File.separator + 'javac.exe'
+        }
+        productionTest {
+            dimension "build-type"
+            // 모바일 OTP에서 사용하는 ANDROID_ID의 값이 동일 해야 하기 때문에 서명키 운영키로 고정
+            signingConfig signingConfigs.production
+
+            applicationId "com.stockwithme.mtstest"
+            manifestPlaceholders = [appLabel: "내주식T",
+                                    appIcon: "@mipmap/ic_launcher",
+                                    appIconRound: "@mipmap/ic_launcher_round",
+                                    deeplinkScheme: "stockwmtest",
+                                    mediaType: "TEST"]
+            // println System.getProperty('java.home') + File.separator + 'bin' + File.separator + 'javac.exe'
+        }
+        production {
+            dimension "build-type"
+            // 모바일 OTP에서 사용하는 ANDROID_ID의 값이 동일 해야 하기 때문에 서명키 운영키로 고정
+            signingConfig signingConfigs.production
+
+            applicationId "com.stockwithme.mts"
+            manifestPlaceholders = [appLabel: "내주식",
+                                    appIcon: "@mipmap/ic_launcher",
+                                    appIconRound: "@mipmap/ic_launcher_round",
+                                    deeplinkScheme: "stockwm",
+                                    mediaType: "PROD"]
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.production
+            shrinkResources false
+        }
+        release {
+            signingConfig signingConfigs.production
+            minifyEnabled false
+            shrinkResources false
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {}
