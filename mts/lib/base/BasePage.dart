@@ -6,11 +6,14 @@ import 'package:mts/page/splash/SplashPageController.dart';
 import '../utils/DialogUtils.dart';
 import '../utils/MyColors.dart';
 import 'BasePageController.dart';
+import 'GlobalController.dart';
 
 abstract class BasePage<T> extends StatelessWidget{
   final bool isSafeArea; /// SafeArea 유무
   final T ctrl;          /// 컨트롤러
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  GlobalController globalCtrl = Get.find();
 
   BasePage({Key? key, this.isSafeArea = false, required this.ctrl}) : super(key: key);
 

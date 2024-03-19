@@ -1,18 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mts/base/BasePage.dart';
+import 'package:mts/utils/MyColors.dart';
 
 import 'SplashPageController.dart';
 
 class SplashPage extends BasePage<SplashPageController> {
-  SplashPage({super.key, required super.ctrl}) : super(isSafeArea: false);
+  SplashPage({super.key, required super.ctrl}) : super(isSafeArea: false){
+    globalCtrl.getAuthKey();
+  }
 
   @override
   Widget setBuild() {
     return Container(
-      alignment: Alignment.center,
-      color: Colors.red,
-      child: Text("Splash 페이지 입니다."),
+      width: double.infinity,
+      color: MyColors.bgPurple,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Obx((){
+            return Text("Auth : ${globalCtrl.authKey.value}",style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: MyColors.fWhite));
+          }),
+          InkWell(
+            onTap: globalCtrl.getAuthKey,
+            child: Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.0),
+                color: MyColors.bgBtnRed,
+              ),
+              child: Text('getAuthKey',style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            ),
+          )
+        ],
+      ),
     );
   }
-
 }

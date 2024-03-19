@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:mts/base/GlobalController.dart';
 import 'package:mts/page/splash/SplashPageController.dart';
 
 import '../utils/CommonUtils.dart';

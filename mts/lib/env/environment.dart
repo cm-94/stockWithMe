@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:mts/base/GlobalController.dart';
 import '../main.dart';
 import '../utils/LogCat.dart';
 
@@ -40,9 +42,6 @@ class Environment {
     return _instance!;
   }
 
-  bool get isDevelopment => _buildType == BuildType.development;
-  bool get isProductionTest => _buildType == BuildType.productionTest;
-
   void run() {
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -50,6 +49,8 @@ class Environment {
         ? [DeviceOrientation.portraitUp]
         : [DeviceOrientation.portraitUp, DeviceOrientation.landscapeRight];
     SystemChrome.setPreferredOrientations(orientation);
+
+    final globalCtrl = Get.put(GlobalController());
 
     runApp(const StockApp());
   }
