@@ -10,12 +10,16 @@ import 'GlobalController.dart';
 
 abstract class BasePage<T> extends StatelessWidget{
   final bool isSafeArea; /// SafeArea 유무
-  final T ctrl;          /// 컨트롤러
+  late T ctrl;          /// 컨트롤러
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  GlobalController globalCtrl = Get.find();
+  final GlobalController globalCtrl = Get.find(); /// TODO : 화면에서 기능 테스트용.. 추후 BasePageController 에서만 사용하도록 수정..!!
 
-  BasePage({Key? key, this.isSafeArea = false, required this.ctrl}) : super(key: key);
+  BasePage({Key? key, this.isSafeArea = false}) : super(key: key){
+    ctrl = getController();
+  }
+
+  T getController();
 
   Widget setBuild();
 

@@ -1,3 +1,9 @@
+import 'dart:io';
+
+import 'package:archive/archive.dart';
+import 'package:mts/utils/CommonUtils.dart';
+import 'package:mts/utils/LogCat.dart';
+
 import '../env/environment.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -15,61 +21,81 @@ class CommApi {
     // _init();
   }
 
-  void requestApi({required String url, Map<String, dynamic>? input, Map<String, String>? header, String type = "GET"}) async {
-    var rqUrl = "$domain:$port$url";
-    // var rqUrl = domain + port + url;
+  Future<Map<String, dynamic>> requestApi({required String url, Map<String, dynamic>? input, Map<String, String>? header, String type = "GET"/*, Function(Map<String, dynamic> response, bool isSuccess)? response*/}) async {
+    Map<String, dynamic> result = <String, dynamic>{};
 
-    /////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////
-
-    // final response = await http.get(Uri.parse(rqUrl), headers: rqHeader);
-
-    /////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////
-
-    var body = json.encode(input);
-
-    // if (input != null && input.isNotEmpty){
-    //   rqUrl += "?";
-    //   var keys = input.keys.toList();
-    //   for ( var i = 0; i < keys.length; i++ ){
-    //     String key = keys[i];
-    //     String value = input[key];
-    //
-    //     rqUrl += "$key=$value%";
-    //   }
-    //   rqUrl = rqUrl.replaceAll(RegExp(r'.$'), ''); /// 마지막 문자(%) 제거
-    // }
-
+    var rqUrl = "$domain:$port$url";    /// 요청 URL
+    var inputBody = json.encode(input); /// input Data
     var uri = Uri.parse(rqUrl);
     var client = http.Client();
+    http.Response resData;
 
     try {
-      var response;
-      if( type == "GET"){
-        response = await client.get(
+      if( type == "GET" ){
+        resData = await client.get(
           uri,
           headers: header
         );
       }
       else{
-        response = await client.post(
+        resData = await client.post(
             uri,
             headers: header,
-            body: body
+            body: inputBody
         );
       }
 
-
-      if (response.statusCode == 200) {
+      if(resData.statusCode == 200) {
         // 성공적으로 데이터를 받음
-        print('Secure response data: ${response.body}');
+        LogCat.e(TAG, 'Secure response data: ${resData.body}');
+        result['header'] = resData.headers;
+        result['body'] = json.decode(resData.body);
+        result['isSuccess'] = true;
+        // response?.call(result, true);
       } else {
         // 에러 처리
-        print('Secure request failed with status: ${response.statusCode}.');
+        LogCat.e(TAG, 'Secure request failed with status: ${resData.statusCode}.');
+        result['header'] = resData.headers;
+        result['statusCode'] = resData.statusCode;
+        result['isSuccess'] = false;
+        // response?.call(result, false);
       }
     } finally {
       client.close();
+    }
+    return result;
+  }
+
+  Future<String?> fileDownload({required String url}) async {
+    http.Response resData = await http.get(Uri.parse(url));
+    if(resData.statusCode == 200){
+
+      var path = await CommonUtils.getFilePath();
+
+      File zipFile = File('$path/temp');
+      await zipFile.writeAsBytes(resData.bodyBytes);
+      final bytes = zipFile.readAsBytesSync();
+      zipFile.delete();
+      Archive archive = ZipDecoder().decodeBytes(
+        bytes,
+        verify: true,
+      );
+      final unzipFile = archive[0];
+
+      final filename = unzipFile.name;
+      if (unzipFile.isFile) {
+        final data = unzipFile.content as List<int>;
+        /// TODO : byte -> string ... Unhandled Exception: FormatException: Invalid value in input: 199
+        const asciiDecoder = AsciiDecoder();
+        final result = asciiDecoder.convert(data.toList());
+        return result;
+      }
+
+
+      return null;
+    }
+    else {
+      return null;
     }
   }
 

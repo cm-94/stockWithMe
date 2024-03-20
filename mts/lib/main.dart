@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:mts/page/splash/SplashPage.dart';
-import 'package:mts/page/splash/SplashPageController.dart';
 import 'package:mts/router/PageRouter.dart';
 
 import 'lang/LocalizationService.dart';
@@ -27,7 +25,7 @@ class StockApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: "상상인증권",
+      title: "주식지갑",
       debugShowCheckedModeBanner: false,
       defaultTransition: Transition.noTransition,
       locale: LocalizationService.locale,

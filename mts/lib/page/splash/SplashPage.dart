@@ -6,8 +6,11 @@ import 'package:mts/utils/MyColors.dart';
 import 'SplashPageController.dart';
 
 class SplashPage extends BasePage<SplashPageController> {
-  SplashPage({super.key, required super.ctrl}) : super(isSafeArea: false){
-    globalCtrl.getAuthKey();
+  SplashPage({super.key}) : super(isSafeArea: false);
+
+  @override
+  SplashPageController getController() {
+    return Get.put(SplashPageController());
   }
 
   @override
@@ -22,7 +25,7 @@ class SplashPage extends BasePage<SplashPageController> {
             return Text("Auth : ${globalCtrl.authKey.value}",style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: MyColors.fWhite));
           }),
           InkWell(
-            onTap: globalCtrl.getAuthKey,
+            onTap: globalCtrl.getJmMst,
             child: Container(
               padding: EdgeInsets.all(12),
               decoration: BoxDecoration(

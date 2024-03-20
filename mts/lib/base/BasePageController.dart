@@ -12,6 +12,8 @@ abstract class BasePageController<T> extends GetxController{
   static const String _TAG = "BasePageController";
   late String className;
 
+  GlobalController globalCtrl = Get.find();
+
   // 앱 종료
   static const snackBarDuration = Duration(seconds: 2);
   DateTime? backButtonPressTime;

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 class CommonUtils {
   // 앱 종료. 딜레이 필요
@@ -28,5 +29,22 @@ class CommonUtils {
         exit(0);
       });
     }
+  }
+
+  /// 파일 다운로드 경로 찾기
+  static Future<String> getFilePath() async {
+    Directory? directory;
+    if (Platform.isIOS) {
+      directory = await getApplicationDocumentsDirectory();
+    } else {
+      directory = await getExternalStorageDirectory();
+      String newPath = directory?.path.substring(0, 20) ?? "";
+      newPath += "Download";
+      directory = Directory(newPath);
+      if (!directory.existsSync()) {
+        await directory.create();
+      }
+    }
+    return directory.path;
   }
 }

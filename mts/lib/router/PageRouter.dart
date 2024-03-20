@@ -8,7 +8,7 @@ class PageRouter {
   static final route = [
     GetPage(
         name: '/splashPage',
-        page: () => SplashPage(ctrl: SplashPageController()), // 스플레쉬 기동화면
+        page: () => SplashPage(), // 스플레쉬 기동화면
         transition: Transition.noTransition
     ),
   ];
