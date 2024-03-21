@@ -58,6 +58,10 @@ dependencies:
   archive: ^3.4.10
   # String 포매팅
   sprintf: ^7.0.0
+  # CJK인코딩 지원
+  charset_converter: ^2.1.0
+  # Json Parse
+#  class_to_map: ^0.0.1
 
 #  # async
 #  async: ^2.8.2

@@ -47,4 +47,29 @@ class CommonUtils {
     }
     return directory.path;
   }
+  /// 마스터 파일 라인 파싱
+  static Map<String,String>? parseMstData(List<int> sizeList, List<String> keyList, String lineData) {
+    Map<String,String> result = {};
+
+    try{
+      if(sizeList.length != keyList.length){
+        return null;
+      }
+
+      var startIdx = 0;
+      var endIdx = 0;
+      for(var i = 0; i < sizeList.length; i++){
+        endIdx += sizeList[i];
+        var key = keyList[i];
+        var value = lineData.substring(startIdx,endIdx);
+        result[key] = value;
+        startIdx = endIdx;
+      }
+    }
+    catch(e){
+      return null;
+    }
+
+    return result;
+  }
 }

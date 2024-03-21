@@ -1,6 +1,9 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
+import 'package:charset_converter/charset_converter.dart';
+import 'package:mts/comm/mst/JmKospi.dart';
 import 'package:mts/utils/CommonUtils.dart';
 import 'package:mts/utils/LogCat.dart';
 
@@ -81,16 +84,15 @@ class CommApi {
         verify: true,
       );
       final unzipFile = archive[0];
-
-      final filename = unzipFile.name;
       if (unzipFile.isFile) {
-        final data = unzipFile.content as List<int>;
+        final data = unzipFile.content as Uint8List;
         /// TODO : byte -> string ... Unhandled Exception: FormatException: Invalid value in input: 199
-        const asciiDecoder = AsciiDecoder();
-        final result = asciiDecoder.convert(data.toList());
-        return result;
-      }
+        String? decoded = (await CharsetConverter.decode(
+            "EUC-KR", data));
 
+        LogCat.d(TAG,decoded);
+        return decoded;
+      }
 
       return null;
     }
